@@ -1,0 +1,66 @@
+<header class="navbar navbar-dark bg-dark fixed-top">
+  <div class="container-fluid px-4">
+    <span class="navbar-brand">Map Area</span>
+    <button class="btn btn-outline-light" (click)="logout()">Logout</button>
+  </div>
+</header>
+
+<div class="p-4 pt-5 mt-5">
+  <form [formGroup]="coordinatesForm" *ngIf="coordinatesForm" (ngSubmit)="submitCoordinate()">
+    <div class="alert alert-warning mb-4" *ngIf="coordGroups.length < 4">
+      Add at least 4 coordinates.
+    </div>
+    <div formArrayName="coordinates">
+      <div *ngFor="let coordGroup of coordGroups.controls; let i = index" class="mb-3" [formGroupName]="i">
+        <h5 class="mb-3">Coordinate {{ i + 1 }}</h5>
+        <div class="row">
+          <div class="col">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Latitude</mat-label>
+              <input matInput type="number" formControlName="latitude" [id]="'latitudeInput '+i">
+              <mat-error *ngIf="coordGroup.get('latitude')?.invalid && coordGroup.get('latitude')?.touched">
+                Latitude is required and must be between -90 and 90.
+              </mat-error>
+            </mat-form-field>
+          </div>
+          <div class="col">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Longitude</mat-label>
+              <input matInput type="number" formControlName="longitude" [id]="'longitudeInput '+i">
+              <mat-error *ngIf="coordGroup.get('longitude')?.invalid && coordGroup.get('longitude')?.touched">
+                Longitude is required and must be between -180 and 180.
+              </mat-error>
+            </mat-form-field>
+          </div>
+          <div class="col-auto" *ngIf="coordGroups.length > 4">
+            <button type="button" class="btn btn-outline-danger btn-lg mt-1" (click)="removeCoordinateField(i)">
+              <i class="bi bi-trash"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="mb-3 d-flex justify-content-start flex-wrap gap-3">
+      <button type="button" class="btn btn-outline-primary" (click)="addCoordinateField()">Add Coordinate</button>
+      <button type="submit" class="btn btn-primary" [disabled]="coordinatesForm.invalid || !formChanged">Submit Coordinates</button>
+      <button class="btn btn-danger" (click)="clearCoordinates()">Clear Coordinates</button>
+    </div>
+  </form>
+
+
+  <div class="row my-5">
+
+    <div class="col-lg-8 mb-3">
+      <app-maps (newCoordinates)="updateCoordinatesForm($event)" *ngIf="currentLocation" [centroid]="centroid" [coordinates]="coordinates"></app-maps>
+    </div>
+
+    <div class="col-lg-4">
+      <div *ngIf="area !== undefined">
+        <p class="fw-bold">Area Calculated:</p>
+        <p>{{ area | number: '1.2-2' }} square meters</p>
+      </div>
+    </div>
+  </div>
+
+</div>

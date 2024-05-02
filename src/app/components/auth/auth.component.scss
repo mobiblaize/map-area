@@ -1,0 +1,15 @@
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  mat-card {
+    padding: 1rem 0.5rem;
+    max-width: 25rem;
+    width: 100%;
+
+    .social-login-container {
+      text-align: center;
+    }
+  }
+}
